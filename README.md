@@ -17,14 +17,10 @@ It's completely based on MyFaces 3.x as some changes were required.
 
 ### Build MyFaces
 - https://github.com/apache/myfaces.git 
-- cd api
-   mvn versions:set -DnewVersion=3.0.0-M1 
-   mvn clean install
-- cd impl
-   mvn versions:set -DnewVersion=3.0.0-M1 
-   mvn clean install
+- mvn versions:set -DnewVersion=3.0.0-M1 (NOTE: we need to update the version to M1 as Quarkus does _NOT_ support snapshots)
+- mvn clean install
 
-NOTE: we need to update the version to M1 as Quarkus does _NOT_ support snapshots
+
 
 ### Build quarkus-myfaces
 - cd quarkus-myfaces
