@@ -1,6 +1,6 @@
 # quarkus-myfaces
 
-Prototype implementation of a JSF / MyFaces Core module for Quarkus.
+Prototype implementation of a JSF / MyFaces Core module for Quarkus. 
 It's completely based on MyFaces 3.x as some changes were required.
 
 ## Whats not supported?
@@ -9,6 +9,7 @@ It's completely based on MyFaces 3.x as some changes were required.
 - Quarkus: session replication / passivation / clustering
 
 ## Whats not tested?
+- many features probably :D
 - native images
 
 ## How to try it?
