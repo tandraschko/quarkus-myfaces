@@ -7,9 +7,10 @@ It's completely based on MyFaces 3.x as some changes were required.
 - JSF: Flows
 - JSF: Injection into JSF arftifacts
 - Quarkus: session replication / passivation / clustering
+- some features probably :D
 
 ## Whats not tested?
-- many features probably :D
+- some features probably :D
 - native images
 
 ## How to try it?
