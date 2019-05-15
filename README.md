@@ -6,6 +6,7 @@ It's completely based on MyFaces 3.x as some changes were required.
 ## Whats not supported?
 - JSF: Flows
 - JSF: Injection into JSF arftifacts
+- Quarkus: src/main/webapp! You need to put your views under src/main/resources/META-INF/resources!
 - Quarkus: session replication / passivation / clustering
 - some features probably :D
 
