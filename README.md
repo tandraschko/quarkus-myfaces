@@ -3,15 +3,15 @@
 Prototype implementation of a JSF / MyFaces Core module for Quarkus.
 It's completely based on MyFaces 3.x as some changes were required.
 
-# Whats not supported?
+## Whats not supported?
 - JSF: Flows
 - JSF: Injection into JSF arftifacts
 - Quarkus: session replication / passivation / clustering
 
-# Whats not tested?
+## Whats not tested?
 - native images
 
-# How to try it?
+## How to try it?
 
 ### Build MyFaces
 - https://github.com/apache/myfaces.git
