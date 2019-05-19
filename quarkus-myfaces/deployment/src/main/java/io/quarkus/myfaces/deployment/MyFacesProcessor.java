@@ -176,7 +176,7 @@ class MyFacesProcessor {
 
         // primefaces perf
         initParam.produce(new ServletInitParamBuildItem(
-                "primefaces.SUBMIT", "true"));
+                "primefaces.SUBMIT", "partial"));
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
     }
