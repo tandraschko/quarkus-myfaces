@@ -31,7 +31,7 @@
 
     <dependencies>
 
-		<!-- MyFaces -->
+        <!-- MyFaces -->
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>
@@ -48,17 +48,22 @@
             <version>1.9.3</version>
         </dependency>
 
-		<!-- EL implementation -->
+        <!-- EL implementation -->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
             <version>9.0.17</version>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
             <artifactId>jboss-servlet-api_4.0_spec</artifactId>
-			<scope>provided</scope>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.websocket</groupId>
+            <artifactId>jboss-websocket-api_1.1_spec</artifactId>
+            <version>1.1.4.Final</version>
         </dependency>
 
 
