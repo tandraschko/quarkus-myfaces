@@ -27,11 +27,13 @@ import javax.faces.view.ViewScoped;
 import javax.faces.view.facelets.FaceletsResourceResolver;
 import javax.faces.webapp.FacesServlet;
 
+import org.apache.myfaces.cdi.FacesScoped;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.cdi.JsfArtifactProducer;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
+import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
@@ -56,7 +58,9 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.myfaces.runtime.MyFacesTemplate;
 import io.quarkus.myfaces.runtime.QuarkusServletContextListener;
 import io.quarkus.myfaces.runtime.myfaces.QuarkusInjectionProvider;
-import io.quarkus.myfaces.runtime.myfaces.QuarkusViewScopeContext;
+import io.quarkus.myfaces.runtime.scopes.QuarkusFacesScopeContext;
+import io.quarkus.myfaces.runtime.scopes.QuarkusViewScopeContext;
+import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
@@ -132,6 +136,9 @@ class MyFacesProcessor {
             @Override
             public void register(ContextRegistrar.RegistrationContext registrationContext) {
                 registrationContext.configure(ViewScoped.class).normal().contextClass(QuarkusViewScopeContext.class).done();
+                registrationContext.configure(FacesScoped.class).normal().contextClass(QuarkusFacesScopeContext.class).done();
+                registrationContext.configure(ViewTransientScoped.class).normal()
+                        .contextClass(QuarkusViewTransientScopeContext.class).done();
             }
         }));
     }
