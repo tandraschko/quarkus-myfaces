@@ -22,7 +22,6 @@ import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.view.ViewTransientScopeContextImpl;
 
@@ -59,7 +58,7 @@ public class QuarkusViewTransientScopeContext implements InjectableContext {
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return ViewScoped.class;
+        return wrapped.getScope();
     }
 
     @Override
