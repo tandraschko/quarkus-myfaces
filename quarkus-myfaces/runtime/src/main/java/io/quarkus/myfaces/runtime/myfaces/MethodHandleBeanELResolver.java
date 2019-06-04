@@ -243,7 +243,6 @@ public class MethodHandleBeanELResolver extends ELResolver {
                         lookup, setterHandle, ObjBooleanConsumer.class, boolean.class).getTarget().invokeExact();
                 return (a, b) -> consumer.accept(a, (boolean) b);
             } else {
-                // Real code needs to support short, char, boolean, byte, and float according to pattern above
                 throw new RuntimeException("Type is not supported yet: " + propertyInfo.type.getName());
             }
         } else {
