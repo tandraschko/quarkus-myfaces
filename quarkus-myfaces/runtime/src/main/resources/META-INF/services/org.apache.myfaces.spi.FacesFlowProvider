@@ -1,1 +1,1 @@
-io.quarkus.myfaces.runtime.myfaces.QuarkusFacesFlowProvider
+io.quarkus.myfaces.runtime.spi.QuarkusFacesFlowProvider

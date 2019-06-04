@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.quarkus.myfaces.runtime.myfaces;
+package io.quarkus.myfaces.runtime.spi;
 
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.CallSite;
@@ -169,6 +169,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
         return info;
     }
 
+    @SuppressWarnings("unchecked")
     protected BiConsumer createSetter(MethodHandles.Lookup lookup, PropertyInfo propertyInfo, MethodHandle setterHandle)
             throws LambdaConversionException, Throwable {
         if (propertyInfo.type.isPrimitive()) {

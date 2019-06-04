@@ -24,7 +24,7 @@ import javax.faces.context.FacesContext;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.RuntimeConfig;
 
-import io.quarkus.myfaces.runtime.myfaces.QuarkusELResolverBuilder;
+import io.quarkus.myfaces.runtime.spi.QuarkusELResolverBuilder;
 
 public class QuarkusApplication extends ApplicationWrapper {
 

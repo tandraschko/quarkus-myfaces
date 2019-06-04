@@ -56,11 +56,12 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.myfaces.runtime.MyFacesTemplate;
+import io.quarkus.myfaces.runtime.QuarkusResourceResolver;
 import io.quarkus.myfaces.runtime.QuarkusServletContextListener;
-import io.quarkus.myfaces.runtime.myfaces.QuarkusInjectionProvider;
 import io.quarkus.myfaces.runtime.scopes.QuarkusFacesScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
+import io.quarkus.myfaces.runtime.spi.QuarkusInjectionProvider;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
@@ -154,6 +155,9 @@ class MyFacesProcessor {
                 "org.apache.myfaces.SUPPORT_JSP", "false"));
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.CDI_PASSIVATION_SUPPORTED", "false"));
+
+        initParam.produce(new ServletInitParamBuildItem(
+                "javax.faces.FACELETS_RESOURCE_RESOLVER", QuarkusResourceResolver.class.getName()));
     }
 
     @BuildStep
