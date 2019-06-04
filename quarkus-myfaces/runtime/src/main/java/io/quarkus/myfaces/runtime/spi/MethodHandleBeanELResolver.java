@@ -15,6 +15,7 @@
  */
 package io.quarkus.myfaces.runtime.spi;
 
+import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaConversionException;
@@ -34,6 +35,7 @@ import java.util.function.ObjLongConsumer;
 
 import javax.el.BeanELResolver;
 import javax.el.ELContext;
+import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 
 public class MethodHandleBeanELResolver extends BeanELResolver {
@@ -141,7 +143,16 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
         PropertyInfo info = new PropertyInfo();
 
         try {
-            PropertyDescriptor pd = new PropertyDescriptor(fieldName, target);
+            PropertyDescriptor pd = null;
+            for (PropertyDescriptor cpd : Introspector.getBeanInfo(target, Object.class).getPropertyDescriptors()) {
+                if (fieldName.equals(cpd.getName())) {
+                    pd = cpd;
+                }
+            }
+
+            if (pd == null) {
+                throw new PropertyNotFoundException("PropertyNotFoundException TODO");
+            }
 
             info.type = pd.getPropertyType();
 
