@@ -6,15 +6,15 @@
 
     <application>
         <system-event-listener>
-            <system-event-listener-class>io.quarkus.myfaces.runtime.QuarkusStartupListener</system-event-listener-class>
+            <system-event-listener-class>io.quarkus.myfaces.runtime.startup.QuarkusStartupListener</system-event-listener-class>
             <system-event-class>javax.faces.event.PostConstructApplicationEvent</system-event-class>
             <source-class>javax.faces.application.Application</source-class>
         </system-event-listener>
     </application>
 
     <factory>
-        <faces-context-factory>io.quarkus.myfaces.runtime.QuarkusFacesContextFactory</faces-context-factory>
         <application-factory>io.quarkus.myfaces.runtime.QuarkusApplicationFactory</application-factory>
+        <exception-handler-factory>io.quarkus.myfaces.runtime.exception.QuarkusExceptionHandlerFactory</exception-handler-factory>
     </factory>
 
 </faces-config>

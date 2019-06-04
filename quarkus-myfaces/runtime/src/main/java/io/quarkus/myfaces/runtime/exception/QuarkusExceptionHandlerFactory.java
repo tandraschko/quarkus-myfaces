@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.quarkus.myfaces.runtime;
+package io.quarkus.myfaces.runtime.exception;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextWrapper;
+import javax.faces.context.ExceptionHandler;
+import javax.faces.context.ExceptionHandlerFactory;
 
-public class QuarkusFacesContext extends FacesContextWrapper {
+public class QuarkusExceptionHandlerFactory extends ExceptionHandlerFactory {
 
-    private ExternalContext externalContext;
-
-    public QuarkusFacesContext(FacesContext wrapped) {
+    public QuarkusExceptionHandlerFactory(ExceptionHandlerFactory wrapped) {
         super(wrapped);
-
-        FacesContext.setCurrentInstance(this);
     }
 
     @Override
-    public ExternalContext getExternalContext() {
-        if (externalContext == null) {
-            externalContext = getWrapped().getExternalContext();
-        }
-        return externalContext;
+    public ExceptionHandler getExceptionHandler() {
+        return new QuarkusExceptionHandler(getWrapped().getExceptionHandler());
     }
+
 }

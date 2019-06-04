@@ -62,6 +62,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
         };
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
         Objects.requireNonNull(context);
@@ -74,6 +75,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
         return getPropertyInfo(base, property).getter.apply(base);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
         Objects.requireNonNull(context);
