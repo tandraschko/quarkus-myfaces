@@ -15,13 +15,6 @@
  */
 package io.quarkus.myfaces.runtime.myfaces;
 
-import static javax.el.ELResolver.RESOLVABLE_AT_DESIGN_TIME;
-import static javax.el.ELResolver.TYPE;
-
-import java.beans.BeanInfo;
-import java.beans.FeatureDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaConversionException;
@@ -30,8 +23,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,11 +32,11 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ObjLongConsumer;
 
+import javax.el.BeanELResolver;
 import javax.el.ELContext;
-import javax.el.ELResolver;
 import javax.el.PropertyNotWritableException;
 
-public class MethodHandleBeanELResolver extends ELResolver {
+public class MethodHandleBeanELResolver extends BeanELResolver {
 
     private static Method PRIVATE_LOOKUP_IN;
 
@@ -60,21 +51,15 @@ public class MethodHandleBeanELResolver extends ELResolver {
         return PRIVATE_LOOKUP_IN != null;
     }
 
-    private Map<String, Map<String, PropertyInfo>> cache;
+    private ClassValue<Map<String, PropertyInfo>> cache;
 
     public MethodHandleBeanELResolver() {
-        cache = new ConcurrentHashMap<>();
-    }
-
-    @Override
-    public Class<?> getType(ELContext context, Object base, Object property) {
-        Objects.requireNonNull(context);
-        if (base == null || property == null) {
-            return null;
-        }
-
-        context.setPropertyResolved(base, property);
-        return getPropertyInfo(base, property).type;
+        cache = new ClassValue<Map<String, PropertyInfo>>() {
+            @Override
+            protected Map<String, PropertyInfo> computeValue(Class<?> type) {
+                return new ConcurrentHashMap<>();
+            }
+        };
     }
 
     @Override
@@ -130,27 +115,6 @@ public class MethodHandleBeanELResolver extends ELResolver {
     }
 
     @Override
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        if (base == null) {
-            return null;
-        }
-
-        try {
-            BeanInfo info = Introspector.getBeanInfo(base.getClass());
-            PropertyDescriptor[] pds = info.getPropertyDescriptors();
-            for (int i = 0; i < pds.length; i++) {
-                pds[i].setValue(RESOLVABLE_AT_DESIGN_TIME, Boolean.TRUE);
-                pds[i].setValue(TYPE, pds[i].getPropertyType());
-            }
-            return Arrays.asList((FeatureDescriptor[]) pds).iterator();
-        } catch (IntrospectionException e) {
-
-        }
-
-        return null;
-    }
-
-    @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
         if (base != null) {
             return Object.class;
@@ -166,7 +130,7 @@ public class MethodHandleBeanELResolver extends ELResolver {
     }
 
     protected PropertyInfo getPropertyInfo(Object base, Object property) {
-        Map<String, PropertyInfo> beanCache = cache.computeIfAbsent(base.getClass().getName(), k -> new ConcurrentHashMap<>());
+        Map<String, PropertyInfo> beanCache = cache.get(base.getClass());
         return beanCache.computeIfAbsent((String) property, k -> initPropertyInfo(base.getClass(), k));
     }
 
@@ -179,9 +143,7 @@ public class MethodHandleBeanELResolver extends ELResolver {
 
             info.type = pd.getPropertyType();
 
-            //java9+
-            Method m = MethodHandles.class.getMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
-            MethodHandles.Lookup lookup = (MethodHandles.Lookup) m.invoke(null, target, MethodHandles.lookup());
+            MethodHandles.Lookup lookup = (MethodHandles.Lookup) PRIVATE_LOOKUP_IN.invoke(null, target, MethodHandles.lookup());
 
             Method getter = pd.getReadMethod();
             if (getter != null) {
@@ -264,26 +226,31 @@ public class MethodHandleBeanELResolver extends ELResolver {
 
     @FunctionalInterface
     public interface ObjFloatConsumer<T extends Object> {
+
         public void accept(T t, float i);
     }
 
     @FunctionalInterface
     public interface ObjByteConsumer<T extends Object> {
+
         public void accept(T t, byte i);
     }
 
     @FunctionalInterface
     public interface ObjCharConsumer<T extends Object> {
+
         public void accept(T t, char i);
     }
 
     @FunctionalInterface
     public interface ObjShortConsumer<T extends Object> {
+
         public void accept(T t, short i);
     }
 
     @FunctionalInterface
     public interface ObjBooleanConsumer<T extends Object> {
+
         public void accept(T t, boolean i);
     }
 }
