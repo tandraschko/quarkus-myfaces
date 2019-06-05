@@ -35,6 +35,7 @@ import java.util.function.ObjLongConsumer;
 
 import javax.el.BeanELResolver;
 import javax.el.ELContext;
+import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
 
@@ -81,7 +82,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
 
         context.setPropertyResolved(base, property);
 
-        return getPropertyInfo(base, property).getter.apply(base);
+        try {
+            return getPropertyInfo(base, property).getter.apply(base);
+        } catch (Exception e) {
+            throw new ELException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -100,7 +105,11 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
                     + "\" in \"" + base.getClass().getName() + "\" is not writable!");
         }
 
-        propertyInfo.setter.accept(base, value);
+        try {
+            propertyInfo.setter.accept(base, value);
+        } catch (Exception e) {
+            throw new ELException(e);
+        }
     }
 
     @Override
@@ -180,7 +189,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
                 info.setter = createSetter(lookup, info, setterHandle);
             }
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new ELException(e);
         }
 
         return info;
