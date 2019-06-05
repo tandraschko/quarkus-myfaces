@@ -96,7 +96,8 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
 
         PropertyInfo propertyInfo = getPropertyInfo(base, property);
         if (propertyInfo.setter == null) {
-            throw new PropertyNotWritableException("PropertyNotWritableException TODO");
+            throw new PropertyNotWritableException("Property \"" + (String) property
+                    + "\" in \"" + base.getClass().getName() + "\" is not writable!");
         }
 
         propertyInfo.setter.accept(base, value);
@@ -154,7 +155,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
             }
 
             if (pd == null) {
-                throw new PropertyNotFoundException("PropertyNotFoundException TODO");
+                throw new PropertyNotFoundException("Property \"" + fieldName + "\" not found on \"" + target.getName() + "\"");
             }
 
             info.type = pd.getPropertyType();
@@ -188,6 +189,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
     @SuppressWarnings("unchecked")
     protected BiConsumer createSetter(MethodHandles.Lookup lookup, PropertyInfo propertyInfo, MethodHandle setterHandle)
             throws LambdaConversionException, Throwable {
+        // special handling for primitives required, see https://dzone.com/articles/setters-method-handles-and-java-11
         if (propertyInfo.type.isPrimitive()) {
             if (propertyInfo.type == double.class) {
                 ObjDoubleConsumer consumer = (ObjDoubleConsumer) createSetterCallSite(
