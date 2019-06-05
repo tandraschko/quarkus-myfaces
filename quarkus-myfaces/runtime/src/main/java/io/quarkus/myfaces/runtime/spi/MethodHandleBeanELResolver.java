@@ -104,13 +104,9 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
 
     @Override
     public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
-        Objects.requireNonNull(context);
-        if (base == null || method == null) {
-            return null;
-        }
-
-        // TODO
-        return null;
+        // just use the original BeanELResolver method
+        // it's higher effort to implement this
+        return super.invoke(context, base, method, paramTypes, params);
     }
 
     @Override
