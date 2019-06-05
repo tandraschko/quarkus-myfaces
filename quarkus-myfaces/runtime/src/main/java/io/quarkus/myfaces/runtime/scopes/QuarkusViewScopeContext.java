@@ -20,8 +20,8 @@ import java.util.Collection;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
+import javax.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.view.ViewScopeContextImpl;
 
@@ -33,12 +33,13 @@ public class QuarkusViewScopeContext implements InjectableContext {
     private ViewScopeContextImpl wrapped;
 
     public QuarkusViewScopeContext() {
-        wrapped = new ViewScopeContextImpl(null) {
-            @Override
-            protected BeanManager getBeanManager() {
-                return CDI.current().getBeanManager();
-            }
-        };
+    }
+
+    public ViewScopeContextImpl getWrapped() {
+        if (wrapped == null) {
+            wrapped = new ViewScopeContextImpl(CDI.current().getBeanManager());
+        }
+        return wrapped;
     }
 
     @Override
@@ -53,27 +54,27 @@ public class QuarkusViewScopeContext implements InjectableContext {
 
     @Override
     public void destroy(Contextual<?> contextual) {
-        wrapped.destroy(contextual);
+        getWrapped().destroy(contextual);
     }
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return wrapped.getScope();
+        return ViewScoped.class;
     }
 
     @Override
     public <T> T get(Contextual<T> contextual, CreationalContext<T> cc) {
-        return wrapped.get(contextual, cc);
+        return getWrapped().get(contextual, cc);
     }
 
     @Override
     public <T> T get(Contextual<T> contextual) {
-        return wrapped.get(contextual);
+        return getWrapped().get(contextual);
     }
 
     @Override
     public boolean isActive() {
-        return wrapped.isActive();
+        return getWrapped().isActive();
     }
 
 }

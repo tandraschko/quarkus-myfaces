@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
 import org.apache.myfaces.cdi.FacesScopeContextImpl;
+import org.apache.myfaces.cdi.FacesScoped;
 
 import io.quarkus.arc.ContextInstanceHandle;
 import io.quarkus.arc.InjectableContext;
@@ -33,12 +34,13 @@ public class QuarkusFacesScopeContext implements InjectableContext {
     private FacesScopeContextImpl wrapped;
 
     public QuarkusFacesScopeContext() {
-        wrapped = new FacesScopeContextImpl(null) {
-            @Override
-            protected BeanManager getBeanManager() {
-                return CDI.current().getBeanManager();
-            }
-        };
+    }
+
+    public FacesScopeContextImpl getWrapped() {
+        if (wrapped == null) {
+            wrapped = new FacesScopeContextImpl(CDI.current().getBeanManager());
+        }
+        return wrapped;
     }
 
     @Override
@@ -53,27 +55,27 @@ public class QuarkusFacesScopeContext implements InjectableContext {
 
     @Override
     public void destroy(Contextual<?> contextual) {
-        wrapped.destroy(contextual);
+        getWrapped().destroy(contextual);
     }
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return wrapped.getScope();
+        return FacesScoped.class;
     }
 
     @Override
     public <T> T get(Contextual<T> contextual, CreationalContext<T> cc) {
-        return wrapped.get(contextual, cc);
+        return getWrapped().get(contextual, cc);
     }
 
     @Override
     public <T> T get(Contextual<T> contextual) {
-        return wrapped.get(contextual);
+        return getWrapped().get(contextual);
     }
 
     @Override
     public boolean isActive() {
-        return wrapped.isActive();
+        return getWrapped().isActive();
     }
 
 }

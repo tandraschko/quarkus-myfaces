@@ -20,10 +20,10 @@ import java.util.Collection;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
 import org.apache.myfaces.cdi.view.ViewTransientScopeContextImpl;
+import org.apache.myfaces.cdi.view.ViewTransientScoped;
 
 import io.quarkus.arc.ContextInstanceHandle;
 import io.quarkus.arc.InjectableContext;
@@ -33,12 +33,13 @@ public class QuarkusViewTransientScopeContext implements InjectableContext {
     private ViewTransientScopeContextImpl wrapped;
 
     public QuarkusViewTransientScopeContext() {
-        wrapped = new ViewTransientScopeContextImpl(null) {
-            @Override
-            protected BeanManager getBeanManager() {
-                return CDI.current().getBeanManager();
-            }
-        };
+    }
+
+    public ViewTransientScopeContextImpl getWrapped() {
+        if (wrapped == null) {
+            wrapped = new ViewTransientScopeContextImpl(CDI.current().getBeanManager());
+        }
+        return wrapped;
     }
 
     @Override
@@ -53,27 +54,27 @@ public class QuarkusViewTransientScopeContext implements InjectableContext {
 
     @Override
     public void destroy(Contextual<?> contextual) {
-        wrapped.destroy(contextual);
+        getWrapped().destroy(contextual);
     }
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return wrapped.getScope();
+        return ViewTransientScoped.class;
     }
 
     @Override
     public <T> T get(Contextual<T> contextual, CreationalContext<T> cc) {
-        return wrapped.get(contextual, cc);
+        return getWrapped().get(contextual, cc);
     }
 
     @Override
     public <T> T get(Contextual<T> contextual) {
-        return wrapped.get(contextual);
+        return getWrapped().get(contextual);
     }
 
     @Override
     public boolean isActive() {
-        return wrapped.isActive();
+        return getWrapped().isActive();
     }
 
 }
