@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
 import org.apache.myfaces.cdi.FacesScopeContextImpl;
