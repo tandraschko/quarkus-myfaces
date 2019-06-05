@@ -53,15 +53,22 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
         return PRIVATE_LOOKUP_IN != null;
     }
 
-    private ClassValue<Map<String, PropertyInfo>> cache;
+    private final ConcurrentHashMap<String, Map<String, PropertyInfo>> cache;
 
     public MethodHandleBeanELResolver() {
-        cache = new ClassValue<Map<String, PropertyInfo>>() {
-            @Override
-            protected Map<String, PropertyInfo> computeValue(Class<?> type) {
-                return new ConcurrentHashMap<>();
-            }
-        };
+        cache = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property) {
+        Objects.requireNonNull(context);
+        if (base == null || property == null) {
+            return null;
+        }
+
+        context.setPropertyResolved(base, property);
+
+        return getPropertyInfo(base, property).type;
     }
 
     @SuppressWarnings("unchecked")
@@ -134,7 +141,7 @@ public class MethodHandleBeanELResolver extends BeanELResolver {
     }
 
     protected PropertyInfo getPropertyInfo(Object base, Object property) {
-        Map<String, PropertyInfo> beanCache = cache.get(base.getClass());
+        Map<String, PropertyInfo> beanCache = cache.computeIfAbsent(base.getClass().getName(), k -> new ConcurrentHashMap<>());
         return beanCache.computeIfAbsent((String) property, k -> initPropertyInfo(base.getClass(), k));
     }
 
