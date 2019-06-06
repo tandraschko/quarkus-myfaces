@@ -27,7 +27,7 @@
 
                 <br />
 
-                <ui:repeat var="car" value="#{dtLazyView.cars}">
+                <ui:repeat var="car" value="#{methodHandleELResolverBean.cars}">
                     <h:outputText value="#{car.id}" />
                     <h:outputText value="#{car.year}" />
                     <h:outputText value="#{car.brand}" />
