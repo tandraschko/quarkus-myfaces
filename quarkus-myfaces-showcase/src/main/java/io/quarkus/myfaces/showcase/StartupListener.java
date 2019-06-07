@@ -13,7 +13,8 @@ public class StartupListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        sce.getServletContext().setInitParameter("javax.faces.PROJECT_STAGE", projectStage);
+        //uncoment to override default behavior which is based on quarkus profiles (dev, test and normal)
+        //sce.getServletContext().setInitParameter("javax.faces.PROJECT_STAGE", projectStage);
         sce.getServletContext().setInitParameter("primefaces.THEME", "luna-amber");
     }
 

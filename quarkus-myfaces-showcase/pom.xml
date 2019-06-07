@@ -9,7 +9,7 @@
     <name>Quarkus - MyFaces - Showcase</name>
 
     <properties>
-        <quarkus.version>0.15.0</quarkus.version>
+        <quarkus.version>0.16.1</quarkus.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -56,6 +56,11 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
         </dependency>
     </dependencies>
 
