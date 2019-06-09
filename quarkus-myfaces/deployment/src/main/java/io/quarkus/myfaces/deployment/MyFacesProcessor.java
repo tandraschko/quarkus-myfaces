@@ -17,6 +17,7 @@ package io.quarkus.myfaces.deployment;
 
 import java.io.IOException;
 
+import javax.faces.application.ProjectStage;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.FacesConverter;
@@ -62,6 +63,8 @@ import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
 import io.quarkus.myfaces.runtime.spi.QuarkusInjectionProvider;
 import io.quarkus.myfaces.runtime.spi.QuarkusResourceResolver;
 import io.quarkus.myfaces.runtime.startup.QuarkusServletContextListener;
+import io.quarkus.runtime.LaunchMode;
+import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
@@ -190,6 +193,14 @@ class MyFacesProcessor {
                 "primefaces.SUBMIT", "partial"));
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
+
+        String projectStage = ProjectStage.Production.name();
+        if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
+            projectStage = ProjectStage.Development.name();
+        } else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
+            projectStage = ProjectStage.SystemTest.name();
+        }
+        initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage));
     }
 
     @BuildStep
