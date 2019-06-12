@@ -16,10 +16,11 @@
 package io.quarkus.myfaces.runtime.spi;
 
 import java.beans.FeatureDescriptor;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.el.ELContext;
 import javax.el.ELException;
@@ -33,15 +34,15 @@ import javax.faces.FacesException;
 
 /**
  * Custom ELResolver for CDI as BeanManager#getELResolver is not supported on Quarkus.
- * TODO: It probably needs some caching
+ * Currently @Dependent is not supported.
  */
 public class QuarkusCdiELResolver extends ELResolver {
     private BeanManager beanManager;
-    private Map<String, Object> cachedProxies;
+    private Map<String, Optional<Object>> cachedProxies;
 
     public QuarkusCdiELResolver() {
         beanManager = CDI.current().getBeanManager();
-        cachedProxies = new HashMap<>();
+        cachedProxies = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -68,12 +69,17 @@ public class QuarkusCdiELResolver extends ELResolver {
 
         String beanName = (String) property;
 
-        // try cache lookup first
-        Object contextualInstance = cachedProxies.get(beanName);
-        if (contextualInstance != null) {
+        Optional<Object> contextualInstance = cachedProxies.computeIfAbsent(beanName, s -> resolveProxy(s));
+        if (contextualInstance.isPresent()) {
             context.setPropertyResolved(true);
-            return contextualInstance;
+            return contextualInstance.get();
         }
+
+        return null;
+    }
+
+    protected Optional<Object> resolveProxy(String beanName) {
+        Object contextualInstance = null;
 
         Set<Bean<?>> beans = beanManager.getBeans(beanName);
         if (beans != null && !beans.isEmpty()) {
@@ -86,16 +92,9 @@ public class QuarkusCdiELResolver extends ELResolver {
 
             CreationalContext<?> creationalContext = beanManager.createCreationalContext(bean);
             contextualInstance = beanManager.getReference(bean, Object.class, creationalContext);
-            if (contextualInstance != null) {
-                context.setPropertyResolved(true);
-
-                cachedProxies.put(beanName, contextualInstance);
-            }
-
-            return contextualInstance;
         }
 
-        return null;
+        return contextualInstance == null ? Optional.empty() : Optional.of(contextualInstance);
     }
 
     @Override

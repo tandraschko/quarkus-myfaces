@@ -28,6 +28,9 @@ import org.apache.myfaces.spi.AnnotationProvider;
 
 import io.quarkus.myfaces.runtime.MyFacesTemplate;
 
+/**
+ * AnnotationProvider which uses the collected classes from the Quarkus Deployment-time.
+ */
 public class QuarkusAnnotationProvider extends AnnotationProvider {
 
     @Override
