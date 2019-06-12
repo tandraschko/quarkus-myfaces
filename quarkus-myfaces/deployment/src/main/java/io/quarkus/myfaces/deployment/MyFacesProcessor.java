@@ -156,8 +156,6 @@ class MyFacesProcessor {
                 "org.apache.myfaces.FACES_INITIALIZER", FaceletsInitilializer.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.SUPPORT_JSP", "false"));
-        initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.CDI_PASSIVATION_SUPPORTED", "false"));
 
         initParam.produce(new ServletInitParamBuildItem(
                 "javax.faces.FACELETS_RESOURCE_RESOLVER", QuarkusResourceResolver.class.getName()));
