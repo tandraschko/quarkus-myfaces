@@ -19,7 +19,7 @@ public class MyFacesTemplate {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
             Class<? extends Annotation> annotation = (Class<? extends Annotation>) cl.loadClass(annotationName);
-            Class<?> clazz = cl.loadClass(annotationName);
+            Class<?> clazz = cl.loadClass(clazzName);
 
             Set<Class<?>> classes = ANNOTATED_CLASSES.computeIfAbsent(annotation, $ -> new HashSet<>());
             classes.add(clazz);
