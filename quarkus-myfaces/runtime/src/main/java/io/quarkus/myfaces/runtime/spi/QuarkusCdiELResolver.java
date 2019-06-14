@@ -33,7 +33,7 @@ import javax.enterprise.inject.spi.CDI;
 import javax.faces.FacesException;
 
 /**
- * Custom ELResolver for CDI as BeanManager#getELResolver is not supported on Quarkus.
+ * Custom {@link ELResolver} for CDI as {@link BeanManager#getELResolver} is not supported on Quarkus.
  * Currently @Dependent is not supported.
  */
 public class QuarkusCdiELResolver extends ELResolver {
