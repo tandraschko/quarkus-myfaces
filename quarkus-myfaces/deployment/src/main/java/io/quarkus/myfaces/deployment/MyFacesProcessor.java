@@ -180,6 +180,8 @@ class MyFacesProcessor {
                 "org.apache.myfaces.CACHE_EL_EXPRESSIONS", "alwaysRecompile"));
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.COMPRESS_STATE_IN_SESSION", "false"));
+        initParam.produce(new ServletInitParamBuildItem(
+                "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES", "604800000")); // 1 week
 
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "15"));
