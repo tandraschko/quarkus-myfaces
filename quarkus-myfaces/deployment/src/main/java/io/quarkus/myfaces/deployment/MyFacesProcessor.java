@@ -181,7 +181,9 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.COMPRESS_STATE_IN_SESSION", "false"));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES", "604800000")); // 1 week
+              "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES", "86400000")); // 1 day
+        initParam.produce(new ServletInitParamBuildItem(
+                "org.apache.myfaces.RESOURCE_CACHE_LAST_MODIFIED", "true"));
 
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "15"));
