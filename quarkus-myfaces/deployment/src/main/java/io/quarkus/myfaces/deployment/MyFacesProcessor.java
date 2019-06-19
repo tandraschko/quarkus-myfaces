@@ -155,9 +155,9 @@ class MyFacesProcessor {
     void buildInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException {
 
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.spi.InjectionProvider", QuarkusInjectionProvider.class.getName()));
+                MyfacesConfig.INJECTION_PROVIDER, QuarkusInjectionProvider.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.FACES_INITIALIZER", FaceletsInitilializer.class.getName()));
+                MyfacesConfig.FACES_INITIALIZER, FaceletsInitilializer.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.SUPPORT_JSP, "false"));
 
