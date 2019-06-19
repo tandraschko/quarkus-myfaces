@@ -69,6 +69,9 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import java.util.Optional;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 class MyFacesProcessor {
 
@@ -197,14 +200,10 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
 
-        String projectStage = ProjectStage.Production.name();
-        if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
-            projectStage = ProjectStage.Development.name();
-        } else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
-            projectStage = ProjectStage.SystemTest.name();
-        }
-        initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage));
+        Optional<String> projectStage = resolveProjectStage();
+        initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage.get()));
     }
+    
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
@@ -217,5 +216,19 @@ class MyFacesProcessor {
                     .forEach(annotation -> template.registerAnnotatedClass(annotation.name().toString(),
                             annotation.target().asClass().name().toString()));
         }
+    }
+    
+    private Optional<String> resolveProjectStage() {
+        Config config = ConfigProvider.getConfig();
+        Optional<String> projectStage = config.getOptionalValue("javax.faces.PROJECT_STAGE", String.class);
+        if (!projectStage.isPresent()) {
+            projectStage = Optional.of(ProjectStage.Production.name());
+            if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
+                projectStage = Optional.of(ProjectStage.Development.name());
+            } else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
+                projectStage = Optional.of(ProjectStage.SystemTest.name());
+            }
+        }
+        return projectStage;
     }
 }
