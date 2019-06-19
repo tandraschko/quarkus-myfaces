@@ -16,6 +16,7 @@
 package io.quarkus.myfaces.deployment;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.component.FacesComponent;
@@ -45,6 +46,8 @@ import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.webapp.FaceletsInitilializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.DotName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -197,13 +200,8 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
 
-        String projectStage = ProjectStage.Production.name();
-        if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
-            projectStage = ProjectStage.Development.name();
-        } else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
-            projectStage = ProjectStage.SystemTest.name();
-        }
-        initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage));
+        Optional<String> projectStage = resolveProjectStage();
+        initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage.get()));
     }
 
     @BuildStep
@@ -217,5 +215,19 @@ class MyFacesProcessor {
                     .forEach(annotation -> template.registerAnnotatedClass(annotation.name().toString(),
                             annotation.target().asClass().name().toString()));
         }
+    }
+
+    private Optional<String> resolveProjectStage() {
+        Config config = ConfigProvider.getConfig();
+        Optional<String> projectStage = config.getOptionalValue("javax.faces.PROJECT_STAGE", String.class);
+        if (!projectStage.isPresent()) {
+            projectStage = Optional.of(ProjectStage.Production.name());
+            if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
+                projectStage = Optional.of(ProjectStage.Development.name());
+            } else if (LaunchMode.TEST.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
+                projectStage = Optional.of(ProjectStage.SystemTest.name());
+            }
+        }
+        return projectStage;
     }
 }
