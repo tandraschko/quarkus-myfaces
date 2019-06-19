@@ -72,6 +72,7 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import javax.faces.application.StateManager;
 
 class MyFacesProcessor {
 
@@ -162,7 +163,7 @@ class MyFacesProcessor {
                 MyfacesConfig.SUPPORT_JSP, "false"));
 
         initParam.produce(new ServletInitParamBuildItem(
-                "javax.faces.FACELETS_RESOURCE_RESOLVER", QuarkusResourceResolver.class.getName()));
+                MyfacesConfig.FACELETS_RESOURCE_RESOLVER, QuarkusResourceResolver.class.getName()));
     }
 
     @BuildStep
@@ -171,9 +172,9 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.LOG_WEB_CONTEXT_PARAMS, "false"));
         initParam.produce(new ServletInitParamBuildItem(
-                "javax.faces.STATE_SAVING_METHOD", "server"));
+                StateManager.STATE_SAVING_METHOD_PARAM_NAME, StateManager.STATE_SAVING_METHOD_SERVER));
         initParam.produce(new ServletInitParamBuildItem(
-                "javax.faces.SERIALIZE_SERVER_STATE", "false"));
+                StateManager.SERIALIZE_SERVER_STATE_PARAM_NAME, "false"));
 
         // perf
         initParam.produce(new ServletInitParamBuildItem(
@@ -201,7 +202,7 @@ class MyFacesProcessor {
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
 
         Optional<String> projectStage = resolveProjectStage();
-        initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage.get()));
+        initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
     }
 
     @BuildStep
@@ -219,7 +220,7 @@ class MyFacesProcessor {
 
     private Optional<String> resolveProjectStage() {
         Config config = ConfigProvider.getConfig();
-        Optional<String> projectStage = config.getOptionalValue("javax.faces.PROJECT_STAGE", String.class);
+        Optional<String> projectStage = config.getOptionalValue(ProjectStage.PROJECT_STAGE_PARAM_NAME, String.class);
         if (!projectStage.isPresent()) {
             projectStage = Optional.of(ProjectStage.Production.name());
             if (LaunchMode.DEVELOPMENT.getDefaultProfile().equals(ProfileManager.getActiveProfile())) {
