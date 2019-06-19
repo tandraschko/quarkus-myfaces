@@ -35,6 +35,7 @@ import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
 import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
+import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
@@ -155,7 +156,7 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.FACES_INITIALIZER", FaceletsInitilializer.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.SUPPORT_JSP", "false"));
+                MyfacesConfig.SUPPORT_JSP, "false"));
 
         initParam.produce(new ServletInitParamBuildItem(
                 "javax.faces.FACELETS_RESOURCE_RESOLVER", QuarkusResourceResolver.class.getName()));
@@ -173,22 +174,22 @@ class MyFacesProcessor {
 
         // perf
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.CHECK_ID_PRODUCTION_MODE", "false"));
+                MyfacesConfig.CHECK_ID_PRODUCTION_MODE, "false"));
         initParam.produce(new ServletInitParamBuildItem(
                 "org.apache.myfaces.EARLY_FLUSH_ENABLED", "true"));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.CACHE_EL_EXPRESSIONS", "alwaysRecompile"));
+                MyfacesConfig.CACHE_EL_EXPRESSIONS, "alwaysRecompile"));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.COMPRESS_STATE_IN_SESSION", "false"));
+                MyfacesConfig.COMPRESS_STATE_IN_SESSION, "false"));
         initParam.produce(new ServletInitParamBuildItem(
-              "org.apache.myfaces.RESOURCE_MAX_TIME_EXPIRES", "86400000")); // 1 day
+                MyfacesConfig.RESOURCE_MAX_TIME_EXPIRES, "86400000")); // 1 day
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.RESOURCE_CACHE_LAST_MODIFIED", "true"));
+                MyfacesConfig.RESOURCE_CACHE_LAST_MODIFIED, "true"));
 
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.NUMBER_OF_VIEWS_IN_SESSION", "15"));
+                MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "15"));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION", "3"));
+                MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "3"));
 
         // primefaces perf
         initParam.produce(new ServletInitParamBuildItem(
