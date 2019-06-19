@@ -166,7 +166,7 @@ class MyFacesProcessor {
     void buildRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException {
 
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS", "false"));
+                MyfacesConfig.LOG_WEB_CONTEXT_PARAMS, "false"));
         initParam.produce(new ServletInitParamBuildItem(
                 "javax.faces.STATE_SAVING_METHOD", "server"));
         initParam.produce(new ServletInitParamBuildItem(
@@ -176,7 +176,7 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.CHECK_ID_PRODUCTION_MODE, "false"));
         initParam.produce(new ServletInitParamBuildItem(
-                "org.apache.myfaces.EARLY_FLUSH_ENABLED", "true"));
+                MyfacesConfig.EARLY_FLUSH_ENABLED, "true"));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.CACHE_EL_EXPRESSIONS, "alwaysRecompile"));
         initParam.produce(new ServletInitParamBuildItem(
