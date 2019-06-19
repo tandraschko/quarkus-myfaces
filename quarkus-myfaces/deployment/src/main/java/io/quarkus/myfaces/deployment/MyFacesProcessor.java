@@ -16,6 +16,7 @@
 package io.quarkus.myfaces.deployment;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.component.FacesComponent;
@@ -45,6 +46,8 @@ import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.apache.myfaces.webapp.FaceletsInitilializer;
 import org.apache.myfaces.webapp.StartupServletContextListener;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.DotName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -69,9 +72,6 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
-import java.util.Optional;
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
 
 class MyFacesProcessor {
 
@@ -203,7 +203,6 @@ class MyFacesProcessor {
         Optional<String> projectStage = resolveProjectStage();
         initParam.produce(new ServletInitParamBuildItem("javax.faces.PROJECT_STAGE", projectStage.get()));
     }
-    
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
@@ -217,7 +216,7 @@ class MyFacesProcessor {
                             annotation.target().asClass().name().toString()));
         }
     }
-    
+
     private Optional<String> resolveProjectStage() {
         Config config = ConfigProvider.getConfig();
         Optional<String> projectStage = config.getOptionalValue("javax.faces.PROJECT_STAGE", String.class);
