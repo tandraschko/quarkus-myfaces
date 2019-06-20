@@ -23,6 +23,7 @@ import javax.faces.application.StateManager;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.FacesConverter;
+import javax.faces.push.PushContext;
 import javax.faces.render.FacesBehaviorRenderer;
 import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
@@ -207,8 +208,18 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
 
-        Optional<String> projectStage = resolveProjectStage();
+        // user config
+        Config config = ConfigProvider.getConfig();
+
+        Optional<String> projectStage = resolveProjectStage(config);
         initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
+
+        Optional<String> enableWebsocketsEndpoint = config.getOptionalValue(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
+                String.class);
+        if (enableWebsocketsEndpoint.isPresent()) {
+            initParam.produce(new ServletInitParamBuildItem(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
+                    enableWebsocketsEndpoint.get()));
+        }
     }
 
     @BuildStep
@@ -224,8 +235,7 @@ class MyFacesProcessor {
         }
     }
 
-    private Optional<String> resolveProjectStage() {
-        Config config = ConfigProvider.getConfig();
+    private Optional<String> resolveProjectStage(Config config) {
         Optional<String> projectStage = config.getOptionalValue(ProjectStage.PROJECT_STAGE_PARAM_NAME, String.class);
         if (!projectStage.isPresent()) {
             projectStage = Optional.of(ProjectStage.Production.name());
