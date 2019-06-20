@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import javax.faces.application.ProjectStage;
+import javax.faces.application.StateManager;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.FacesConverter;
@@ -40,6 +41,7 @@ import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
+import org.apache.myfaces.push.cdi.PushContextFactoryBean;
 import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
@@ -72,7 +74,6 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
-import javax.faces.application.StateManager;
 
 class MyFacesProcessor {
 
@@ -87,7 +88,12 @@ class MyFacesProcessor {
             WebsocketViewBean.class,
             WebsocketApplicationBean.class,
             FlowScopeBeanHolder.class,
-            CdiAnnotationProviderExtension.class
+            CdiAnnotationProviderExtension.class,
+            PushContextFactoryBean.class,
+            WebsocketChannelTokenBuilderBean.class,
+            WebsocketSessionBean.class,
+            WebsocketViewBean.class,
+            WebsocketApplicationBean.class
     };
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES = {
