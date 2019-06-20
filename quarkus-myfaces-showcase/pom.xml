@@ -35,6 +35,11 @@
             <artifactId>quarkus-myfaces</artifactId>
             <version>${quarkus.version}</version>
         </dependency>
+        <dependency> 
+            <groupId>io.quarkus</groupId> 
+            <artifactId>quarkus-undertow-websockets</artifactId>
+            <version>${quarkus.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.primefaces</groupId>
