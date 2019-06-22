@@ -41,6 +41,7 @@ import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.MyfacesConfig;
 import org.apache.myfaces.config.annotation.CdiAnnotationProviderExtension;
 import org.apache.myfaces.config.element.NamedEvent;
+import org.apache.myfaces.flow.cdi.FlowBuilderFactoryBean;
 import org.apache.myfaces.flow.cdi.FlowScopeBeanHolder;
 import org.apache.myfaces.push.cdi.PushContextFactoryBean;
 import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
@@ -80,21 +81,25 @@ class MyFacesProcessor {
 
     private static final Class[] BEAN_CLASSES = {
             JsfApplicationArtifactHolder.class,
+
             JsfArtifactProducer.class,
+
             FacesConfigBeanHolder.class,
+
             FacesDataModelClassBeanHolder.class,
+
             ViewScopeBeanHolder.class,
-            WebsocketChannelTokenBuilderBean.class,
-            WebsocketSessionBean.class,
-            WebsocketViewBean.class,
-            WebsocketApplicationBean.class,
-            FlowScopeBeanHolder.class,
+
             CdiAnnotationProviderExtension.class,
+
             PushContextFactoryBean.class,
             WebsocketChannelTokenBuilderBean.class,
             WebsocketSessionBean.class,
             WebsocketViewBean.class,
-            WebsocketApplicationBean.class
+            WebsocketApplicationBean.class,
+
+            FlowBuilderFactoryBean.class,
+            FlowScopeBeanHolder.class
     };
 
     private static final String[] BEAN_DEFINING_ANNOTATION_CLASSES = {
