@@ -48,8 +48,6 @@ import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
-import org.apache.myfaces.webapp.FaceletsInitilializer;
-import org.apache.myfaces.webapp.StartupServletContextListener;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.DotName;
@@ -64,8 +62,8 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.myfaces.runtime.MyFacesTemplate;
-import io.quarkus.myfaces.runtime.QuarkusServletContextListener;
+import io.quarkus.myfaces.runtime.MyFacesRecorder;
+import io.quarkus.myfaces.runtime.QuarkusFacesInitilializer;
 import io.quarkus.myfaces.runtime.scopes.QuarkusFacesScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
@@ -124,12 +122,8 @@ class MyFacesProcessor {
             BuildProducer<ListenerBuildItem> listener) throws IOException {
 
         servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
-                .setLoadOnStartup(1)
                 .addMapping("*.xhtml")
                 .build());
-
-        listener.produce(new ListenerBuildItem(QuarkusServletContextListener.class.getName()));
-        listener.produce(new ListenerBuildItem(StartupServletContextListener.class.getName()));
     }
 
     @BuildStep
@@ -170,7 +164,7 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.INJECTION_PROVIDER, QuarkusInjectionProvider.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.FACES_INITIALIZER, FaceletsInitilializer.class.getName()));
+                MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitilializer.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.SUPPORT_JSP, "false"));
 
@@ -229,13 +223,13 @@ class MyFacesProcessor {
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
-    void buildAnnotationProviderIntegration(MyFacesTemplate template, CombinedIndexBuildItem combinedIndex) throws IOException {
+    void buildAnnotationProviderIntegration(MyFacesRecorder recorder, CombinedIndexBuildItem combinedIndex) throws IOException {
 
         for (String clazz : BEAN_DEFINING_ANNOTATION_CLASSES) {
             combinedIndex.getIndex()
                     .getAnnotations(DotName.createSimple(clazz))
                     .stream()
-                    .forEach(annotation -> template.registerAnnotatedClass(annotation.name().toString(),
+                    .forEach(annotation -> recorder.registerAnnotatedClass(annotation.name().toString(),
                             annotation.target().asClass().name().toString()));
         }
     }

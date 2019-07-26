@@ -6,10 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import io.quarkus.runtime.annotations.Template;
+import io.quarkus.runtime.annotations.Recorder;
 
-@Template
-public class MyFacesTemplate {
+@Recorder
+public class MyFacesRecorder {
 
     public static final Map<Class<? extends Annotation>, Set<Class<?>>> ANNOTATED_CLASSES = new LinkedHashMap<>();
 
