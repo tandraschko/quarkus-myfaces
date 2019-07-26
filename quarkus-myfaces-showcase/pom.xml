@@ -9,7 +9,7 @@
     <name>Quarkus - MyFaces - Showcase</name>
 
     <properties>
-        <quarkus.version>0.16.1</quarkus.version>
+        <quarkus.version>0.19.1</quarkus.version>
         <failsafe.version>2.22.0</failsafe.version>
         <surefire.version>2.22.0</surefire.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,8 +35,8 @@
             <artifactId>quarkus-myfaces</artifactId>
             <version>${quarkus.version}</version>
         </dependency>
-        <dependency> 
-            <groupId>io.quarkus</groupId> 
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-undertow-websockets</artifactId>
             <version>${quarkus.version}</version>
         </dependency>
