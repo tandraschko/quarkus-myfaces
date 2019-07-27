@@ -81,5 +81,7 @@ public class QuarkusFactoryFinderProvider implements FactoryFinderProvider {
     public void setFactory(String factoryName, String implName) {
         List<String> impls = classes.computeIfAbsent(factoryName, k -> new ArrayList<>(3));
         impls.add(implName);
+        
+        instances.remove(factoryName);
     }
 }
