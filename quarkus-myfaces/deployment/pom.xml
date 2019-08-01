@@ -21,7 +21,7 @@
     <parent>
         <artifactId>quarkus-myfaces-parent</artifactId>
         <groupId>io.quarkus</groupId>
-        <version>0.19.1</version>
+        <version>0.20.0</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

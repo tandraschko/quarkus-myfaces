@@ -16,7 +16,6 @@
 package io.quarkus.myfaces.runtime.scopes;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
 
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
@@ -25,7 +24,6 @@ import javax.faces.view.ViewScoped;
 
 import org.apache.myfaces.cdi.view.ViewScopeContextImpl;
 
-import io.quarkus.arc.ContextInstanceHandle;
 import io.quarkus.arc.InjectableContext;
 
 public class QuarkusViewScopeContext implements InjectableContext {
@@ -40,11 +38,6 @@ public class QuarkusViewScopeContext implements InjectableContext {
             wrapped = new ViewScopeContextImpl(CDI.current().getBeanManager());
         }
         return wrapped;
-    }
-
-    @Override
-    public Collection<ContextInstanceHandle<?>> getAll() {
-        return null;
     }
 
     @Override
@@ -77,4 +70,8 @@ public class QuarkusViewScopeContext implements InjectableContext {
         return getWrapped().isActive();
     }
 
+    @Override
+    public ContextState getState() {
+        return null;
+    }
 }
