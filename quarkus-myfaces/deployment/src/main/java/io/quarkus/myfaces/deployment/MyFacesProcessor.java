@@ -189,7 +189,7 @@ class MyFacesProcessor {
                     enableWebsocketsEndpoint.get()));
         }
 
-        // SPI
+        // common
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.LOG_WEB_CONTEXT_PARAMS, "false"));
         initParam.produce(new ServletInitParamBuildItem(
