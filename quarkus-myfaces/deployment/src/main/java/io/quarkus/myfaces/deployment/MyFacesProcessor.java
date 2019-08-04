@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.faces.application.ProjectStage;
 import javax.faces.application.StateManager;
+import javax.faces.application.ViewHandler;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.FacesConverter;
@@ -175,6 +176,20 @@ class MyFacesProcessor {
     @BuildStep
     void buildRecommendedInitParams(BuildProducer<ServletInitParamBuildItem> initParam) throws IOException {
 
+        // user config
+        Config config = ConfigProvider.getConfig();
+
+        Optional<String> projectStage = resolveProjectStage(config);
+        initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
+
+        Optional<String> enableWebsocketsEndpoint = config.getOptionalValue(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
+                String.class);
+        if (enableWebsocketsEndpoint.isPresent()) {
+            initParam.produce(new ServletInitParamBuildItem(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
+                    enableWebsocketsEndpoint.get()));
+        }
+
+        // SPI
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.LOG_WEB_CONTEXT_PARAMS, "false"));
         initParam.produce(new ServletInitParamBuildItem(
@@ -192,33 +207,21 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.COMPRESS_STATE_IN_SESSION, "false"));
         initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.RESOURCE_MAX_TIME_EXPIRES, "86400000")); // 1 day
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.RESOURCE_CACHE_LAST_MODIFIED, "true"));
-
-        initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.NUMBER_OF_VIEWS_IN_SESSION, "15"));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "3"));
+
+        // MyFaces used default 0, which means always recompile
+        if (ProjectStage.valueOf(projectStage.get()) == ProjectStage.Development) {
+            initParam.produce(new ServletInitParamBuildItem(
+                    ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "1"));
+        }
 
         // primefaces perf
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.SUBMIT", "partial"));
         initParam.produce(new ServletInitParamBuildItem(
                 "primefaces.MOVE_SCRIPTS_TO_BOTTOM", "true"));
-
-        // user config
-        Config config = ConfigProvider.getConfig();
-
-        Optional<String> projectStage = resolveProjectStage(config);
-        initParam.produce(new ServletInitParamBuildItem(ProjectStage.PROJECT_STAGE_PARAM_NAME, projectStage.get()));
-
-        Optional<String> enableWebsocketsEndpoint = config.getOptionalValue(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
-                String.class);
-        if (enableWebsocketsEndpoint.isPresent()) {
-            initParam.produce(new ServletInitParamBuildItem(PushContext.ENABLE_WEBSOCKET_ENDPOINT_PARAM_NAME,
-                    enableWebsocketsEndpoint.get()));
-        }
     }
 
     @BuildStep
