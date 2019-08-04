@@ -211,7 +211,7 @@ class MyFacesProcessor {
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION, "3"));
 
-        // MyFaces used default 0, which means always recompile
+        // MyFaces uses default 0, which means always recompile
         if (ProjectStage.valueOf(projectStage.get()) == ProjectStage.Development) {
             initParam.produce(new ServletInitParamBuildItem(
                     ViewHandler.FACELETS_REFRESH_PERIOD_PARAM_NAME, "1"));
