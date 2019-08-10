@@ -19,17 +19,9 @@ import java.net.URL;
 
 import org.apache.myfaces.view.facelets.impl.DefaultResourceResolver;
 
-// prevents a NPE, see #3
 public class QuarkusResourceResolver extends DefaultResourceResolver {
     @Override
     public URL resolveUrl(String resource) {
-        URL resourceUrl = super.resolveUrl(resource);
-        if (resourceUrl == null) {
-            if (resource.equals("/")) {
-                resource = "/index.xhtml";
-            }
-            resourceUrl = super.resolveUrl(resource);
-        }
-        return resourceUrl;
+        return super.resolveUrl(resource);
     }
 }
