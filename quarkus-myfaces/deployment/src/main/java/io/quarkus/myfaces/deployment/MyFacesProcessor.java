@@ -69,7 +69,6 @@ import io.quarkus.myfaces.runtime.scopes.QuarkusFacesScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
 import io.quarkus.myfaces.runtime.spi.QuarkusInjectionProvider;
-import io.quarkus.myfaces.runtime.spi.QuarkusResourceResolver;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
@@ -168,9 +167,6 @@ class MyFacesProcessor {
                 MyfacesConfig.FACES_INITIALIZER, QuarkusFacesInitilializer.class.getName()));
         initParam.produce(new ServletInitParamBuildItem(
                 MyfacesConfig.SUPPORT_JSP, "false"));
-
-        initParam.produce(new ServletInitParamBuildItem(
-                MyfacesConfig.FACELETS_RESOURCE_RESOLVER, QuarkusResourceResolver.class.getName()));
     }
 
     @BuildStep
