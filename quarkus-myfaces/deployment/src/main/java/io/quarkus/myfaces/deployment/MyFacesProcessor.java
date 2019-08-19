@@ -51,10 +51,13 @@ import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 import org.jboss.jandex.DotName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
+import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.deployment.ContextRegistrarBuildItem;
 import io.quarkus.arc.processor.ContextRegistrar;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -244,5 +247,46 @@ class MyFacesProcessor {
             }
         }
         return projectStage;
+    }
+
+    @BuildStep
+    void asdas(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+            CombinedIndexBuildItem combinedIndex) throws IOException {
+
+        for (AnnotationInstance ai : combinedIndex.getIndex()
+                .getAnnotations(DotName.createSimple(FacesConverter.class.getName()))) {
+            AnnotationValue managed = ai.value("managed");
+            if (managed != null && managed.asBoolean()) {
+                AnnotationValue forClass = ai.value("forClass");
+                if (forClass != null) {
+                    if (!Object.class.getName().equals(forClass.asClass().name().toString())) {
+                        FacesConverterExtension.register(beanConfigurators,
+                                ai.target().asClass(), forClass.asClass(), null);
+                    }
+                }
+
+                AnnotationValue value = ai.value("value");
+                if (value != null) {
+                    if (value.asString() != null && value.asString().length() > 0) {
+                        FacesConverterExtension.register(beanConfigurators,
+                                ai.target().asClass(), null, value.asString());
+                    }
+                }
+            }
+        }
+
+        for (AnnotationInstance ai : combinedIndex.getIndex()
+                .getAnnotations(DotName.createSimple(FacesValidator.class.getName()))) {
+            AnnotationValue managed = ai.value("managed");
+            if (managed != null && managed.asBoolean()) {
+                AnnotationValue value = ai.value("value");
+                if (value != null) {
+                    if (value.asString() != null && value.asString().length() > 0) {
+                        FacesValidatorExtension.register(beanConfigurators,
+                                ai.target().asClass(), value.asString());
+                    }
+                }
+            }
+        }
     }
 }
