@@ -43,15 +43,20 @@ import io.quarkus.deployment.annotations.BuildProducer;
 public class FacesValidatorExtension {
     public static void register(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             ClassInfo clazz,
+            Boolean isDefault,
             String validatorId) {
         System.err.println("FacesValidatorExtension: " + clazz + ", " + validatorId);
 
         if (validatorId == null) {
             validatorId = "";
         }
+        if (isDefault == null) {
+            isDefault = false;
+        }
 
         List<AnnotationValue> qualifierAttributes = Arrays.asList(
                 AnnotationValue.createStringValue("value", validatorId),
+                AnnotationValue.createBooleanValue("isDefault", isDefault),
                 AnnotationValue.createBooleanValue("managed", true));
 
         AnnotationInstance qualifier = AnnotationInstance.create(
@@ -72,6 +77,8 @@ public class FacesValidatorExtension {
                             .types(Type.create(DotName.createSimple(Validator.class.getName()), Type.Kind.CLASS),
                                     Type.create(clazz.name(), Type.Kind.CLASS))
                             .creator(Fas.class)
+                            .name("someUid")
+                            .defaultBean()
                             .done();
 
                     Field field = registrationContext.getClass().getDeclaredField("this$0");
@@ -84,13 +91,7 @@ public class FacesValidatorExtension {
                             System.err.println(bi);
                         }
                     }
-                } catch (NoSuchFieldException ex) {
-                    Logger.getLogger(FacesValidatorExtension.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SecurityException ex) {
-                    Logger.getLogger(FacesValidatorExtension.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(FacesValidatorExtension.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
+                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                     Logger.getLogger(FacesValidatorExtension.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -100,7 +101,7 @@ public class FacesValidatorExtension {
     static class Fas implements BeanCreator<Object> {
         @Override
         public Object create(CreationalContext<Object> cc, Map<String, Object> map) {
-            System.err.println("#create: " + cc);
+            System.err.println("#########################################create: " + cc);
             System.err.println(map);
 
             return null;

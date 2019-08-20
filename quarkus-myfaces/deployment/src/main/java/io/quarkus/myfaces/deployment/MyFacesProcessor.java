@@ -282,8 +282,11 @@ class MyFacesProcessor {
                 AnnotationValue value = ai.value("value");
                 if (value != null) {
                     if (value.asString() != null && value.asString().length() > 0) {
+
+                        AnnotationValue isDefault = ai.value("isDefault");
+
                         FacesValidatorExtension.register(beanConfigurators,
-                                ai.target().asClass(), value.asString());
+                                ai.target().asClass(), isDefault == null ? null : isDefault.asBoolean(), value.asString());
                     }
                 }
             }
