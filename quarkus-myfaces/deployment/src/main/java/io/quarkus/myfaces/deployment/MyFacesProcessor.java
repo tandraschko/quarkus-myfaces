@@ -250,7 +250,7 @@ class MyFacesProcessor {
     }
 
     @BuildStep
-    void asdas(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+    void registerSyntheticConverterAndValidators(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException {
 
         for (AnnotationInstance ai : combinedIndex.getIndex()

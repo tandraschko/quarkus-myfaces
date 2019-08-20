@@ -15,14 +15,10 @@
  */
 package io.quarkus.myfaces.deployment;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.UUID;
 
-import javax.enterprise.context.spi.CreationalContext;
 import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 
@@ -32,20 +28,18 @@ import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Type;
 
-import io.quarkus.arc.BeanCreator;
 import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
-import io.quarkus.arc.processor.BeanDeployment;
-import io.quarkus.arc.processor.BeanInfo;
 import io.quarkus.arc.processor.BeanRegistrar;
 import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.myfaces.runtime.SimpleBeanCreatorImpl;
 
 public class FacesValidatorExtension {
+
     public static void register(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             ClassInfo clazz,
             Boolean isDefault,
             String validatorId) {
-        System.err.println("FacesValidatorExtension: " + clazz + ", " + validatorId);
 
         if (validatorId == null) {
             validatorId = "";
@@ -67,45 +61,18 @@ public class FacesValidatorExtension {
         beanConfigurators.produce(new BeanRegistrarBuildItem(new BeanRegistrar() {
             @Override
             public void register(BeanRegistrar.RegistrationContext registrationContext) {
-                try {
-                    System.err.println("#register: ");
-
-                    registrationContext
-                            .configure(clazz.name())
-                            .qualifiers(qualifier)
-                            .scope(BuiltinScope.DEPENDENT.getInfo())
-                            .types(Type.create(DotName.createSimple(Validator.class.getName()), Type.Kind.CLASS),
-                                    Type.create(clazz.name(), Type.Kind.CLASS))
-                            .creator(Fas.class)
-                            .name("someUid")
-                            .defaultBean()
-                            .done();
-
-                    Field field = registrationContext.getClass().getDeclaredField("this$0");
-                    field.setAccessible(true);
-
-                    Object o = field.get(registrationContext);
-
-                    for (BeanInfo bi : ((BeanDeployment) o).getBeans()) {
-                        if (bi.getBeanClass().toString().contains("MyValidator")) {
-                            System.err.println(bi);
-                        }
-                    }
-                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(FacesValidatorExtension.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                registrationContext
+                        .configure(clazz.name())
+                        .qualifiers(qualifier)
+                        .scope(BuiltinScope.DEPENDENT.getInfo())
+                        .types(Type.create(DotName.createSimple(Validator.class.getName()), Type.Kind.CLASS),
+                                Type.create(clazz.name(), Type.Kind.CLASS))
+                        .creator(SimpleBeanCreatorImpl.class)
+                        .name(UUID.randomUUID().toString().replace("-", ""))
+                        .defaultBean()
+                        .param(SimpleBeanCreatorImpl.PARAM_CLAZZ, clazz.name().toString())
+                        .done();
             }
         }));
-    }
-
-    static class Fas implements BeanCreator<Object> {
-        @Override
-        public Object create(CreationalContext<Object> cc, Map<String, Object> map) {
-            System.err.println("#########################################create: " + cc);
-            System.err.println(map);
-
-            return null;
-        }
-
     }
 }

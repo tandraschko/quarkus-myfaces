@@ -17,7 +17,9 @@ package io.quarkus.myfaces.deployment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
+import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 import org.jboss.jandex.AnnotationInstance;
@@ -28,14 +30,16 @@ import org.jboss.jandex.Type;
 
 import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.processor.BeanRegistrar;
+import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.myfaces.runtime.SimpleBeanCreatorImpl;
 
 public class FacesConverterExtension {
+
     public static void register(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             ClassInfo clazz,
             Type forClass,
             String converterId) {
-        System.err.println("FacesConverterExtension: " + clazz + ", " + forClass + ", " + converterId);
 
         if (converterId == null) {
             converterId = "";
@@ -60,8 +64,14 @@ public class FacesConverterExtension {
                 registrationContext
                         .configure(clazz.name())
                         .qualifiers(qualifier)
-                        .types(Type.create(clazz.name(), Type.Kind.CLASS))
-                        .creator(mc -> mc.returnValue(mc.loadClass(clazz.name().toString())));
+                        .scope(BuiltinScope.DEPENDENT.getInfo())
+                        .types(Type.create(DotName.createSimple(Converter.class.getName()), Type.Kind.CLASS),
+                                Type.create(clazz.name(), Type.Kind.CLASS))
+                        .creator(SimpleBeanCreatorImpl.class)
+                        .name(UUID.randomUUID().toString().replace("-", ""))
+                        .defaultBean()
+                        .param(SimpleBeanCreatorImpl.PARAM_CLAZZ, clazz.name().toString())
+                        .done();
             }
         }));
     }
