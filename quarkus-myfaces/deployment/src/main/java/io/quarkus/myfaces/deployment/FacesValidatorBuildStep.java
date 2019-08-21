@@ -33,7 +33,7 @@ import io.quarkus.arc.processor.BeanRegistrar;
 import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.myfaces.runtime.SimpleBeanCreatorImpl;
+import io.quarkus.myfaces.runtime.SimpleBeanCreator;
 
 public class FacesValidatorBuildStep {
 
@@ -88,10 +88,10 @@ public class FacesValidatorBuildStep {
                         .scope(BuiltinScope.DEPENDENT.getInfo())
                         .types(Type.create(DotName.createSimple(Validator.class.getName()), Type.Kind.CLASS),
                                 Type.create(clazz.name(), Type.Kind.CLASS))
-                        .creator(SimpleBeanCreatorImpl.class)
+                        .creator(SimpleBeanCreator.class)
                         .name(UUID.randomUUID().toString().replace("-", ""))
                         .defaultBean()
-                        .param(SimpleBeanCreatorImpl.PARAM_CLAZZ, clazz.name().toString())
+                        .param(SimpleBeanCreator.CLASSNAME, clazz.name().toString())
                         .done();
             }
         }));

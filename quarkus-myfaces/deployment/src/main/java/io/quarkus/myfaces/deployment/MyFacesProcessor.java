@@ -56,6 +56,7 @@ import org.jboss.jandex.DotName;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
+import io.quarkus.arc.deployment.BeanRegistrationPhaseBuildItem;
 import io.quarkus.arc.deployment.ContextRegistrarBuildItem;
 import io.quarkus.arc.processor.ContextRegistrar;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -248,10 +249,17 @@ class MyFacesProcessor {
     }
 
     @BuildStep
-    void registerSyntheticConverterAndValidators(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+    void registerValidatorConverterProducers(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException {
 
         FacesConverterBuildStep.build(beanConfigurators, combinedIndex);
         FacesValidatorBuildStep.build(beanConfigurators, combinedIndex);
+    }
+
+    @BuildStep
+    void registerMangedPropertyProducers(BeanRegistrationPhaseBuildItem beanRegistrationPhase,
+            BuildProducer<BeanRegistrationPhaseBuildItem.BeanConfiguratorBuildItem> beanConfigurators) throws IOException {
+
+        ManagedPropertyBuildStep.build(beanRegistrationPhase, beanConfigurators);
     }
 }
