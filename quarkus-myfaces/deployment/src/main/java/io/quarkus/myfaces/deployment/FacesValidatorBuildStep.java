@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
+import javax.faces.validator.FacesValidator;
+import javax.faces.validator.Validator;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
@@ -32,29 +32,50 @@ import io.quarkus.arc.deployment.BeanRegistrarBuildItem;
 import io.quarkus.arc.processor.BeanRegistrar;
 import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.myfaces.runtime.SimpleBeanCreatorImpl;
 
-public class FacesConverterExtension {
+public class FacesValidatorBuildStep {
 
-    public static void register(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
-            ClassInfo clazz,
-            Type forClass,
-            String converterId) {
+    public static void build(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+            CombinedIndexBuildItem combinedIndex) {
+        for (AnnotationInstance ai : combinedIndex.getIndex()
+                .getAnnotations(DotName.createSimple(FacesValidator.class.getName()))) {
+            AnnotationValue managed = ai.value("managed");
+            if (managed != null && managed.asBoolean()) {
+                AnnotationValue value = ai.value("value");
+                if (value != null) {
+                    if (value.asString() != null && value.asString().length() > 0) {
 
-        if (converterId == null) {
-            converterId = "";
+                        AnnotationValue isDefault = ai.value("isDefault");
+
+                        FacesValidatorBuildStep.register(beanConfigurators,
+                                ai.target().asClass(), isDefault == null ? null : isDefault.asBoolean(), value.asString());
+                    }
+                }
+            }
         }
-        if (forClass == null) {
-            forClass = Type.create(DotName.createSimple(Object.class.getName()), Type.Kind.CLASS);
+    }
+
+    private static void register(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+            ClassInfo clazz,
+            Boolean isDefault,
+            String validatorId) {
+
+        if (validatorId == null) {
+            validatorId = "";
+        }
+        if (isDefault == null) {
+            isDefault = false;
         }
 
         List<AnnotationValue> qualifierAttributes = Arrays.asList(
-                AnnotationValue.createClassValue("forClass", forClass),
-                AnnotationValue.createStringValue("value", converterId),
+                AnnotationValue.createStringValue("value", validatorId),
+                AnnotationValue.createBooleanValue("isDefault", isDefault),
                 AnnotationValue.createBooleanValue("managed", true));
 
         AnnotationInstance qualifier = AnnotationInstance.create(
-                DotName.createSimple(FacesConverter.class.getName()),
+                DotName.createSimple(FacesValidator.class.getName()),
                 null,
                 qualifierAttributes);
 
@@ -65,7 +86,7 @@ public class FacesConverterExtension {
                         .configure(clazz.name())
                         .qualifiers(qualifier)
                         .scope(BuiltinScope.DEPENDENT.getInfo())
-                        .types(Type.create(DotName.createSimple(Converter.class.getName()), Type.Kind.CLASS),
+                        .types(Type.create(DotName.createSimple(Validator.class.getName()), Type.Kind.CLASS),
                                 Type.create(clazz.name(), Type.Kind.CLASS))
                         .creator(SimpleBeanCreatorImpl.class)
                         .name(UUID.randomUUID().toString().replace("-", ""))
