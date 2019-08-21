@@ -36,7 +36,7 @@ import org.apache.myfaces.cdi.FacesScoped;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.cdi.JsfArtifactProducer;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
-import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
+import org.apache.myfaces.cdi.model.FacesDataModelHolder;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -76,6 +76,9 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import io.quarkus.undertow.deployment.ListenerBuildItem;
 import io.quarkus.undertow.deployment.ServletBuildItem;
 import io.quarkus.undertow.deployment.ServletInitParamBuildItem;
+import javax.faces.model.FacesDataModel;
+import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationValue;
 
 class MyFacesProcessor {
 
@@ -86,7 +89,7 @@ class MyFacesProcessor {
 
             FacesConfigBeanHolder.class,
 
-            FacesDataModelClassBeanHolder.class,
+            FacesDataModelHolder.class,
 
             ViewScopeBeanHolder.class,
 
@@ -270,6 +273,12 @@ class MyFacesProcessor {
             BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException {
 
-        FacesDataModelBuildStep.build(recorder, beanConfigurators, combinedIndex);
+        for (AnnotationInstance ai : combinedIndex.getIndex()
+                .getAnnotations(DotName.createSimple(FacesDataModel.class.getName()))) {
+            AnnotationValue forClass = ai.value("forClass");
+            if (forClass != null) {
+                recorder.registerFacesDataModel(ai.target().asClass().name().toString(), forClass.asClass().name().toString());
+            }
+        }
     }
 }

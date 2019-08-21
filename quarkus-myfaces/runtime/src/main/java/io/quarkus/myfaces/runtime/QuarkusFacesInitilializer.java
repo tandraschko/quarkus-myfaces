@@ -23,7 +23,7 @@ import javax.faces.model.DataModel;
 import javax.servlet.ServletContext;
 
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
-import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
+import org.apache.myfaces.cdi.model.FacesDataModelHolder;
 import org.apache.myfaces.spi.FactoryFinderProviderFactory;
 import org.apache.myfaces.webapp.FaceletsInitilializer;
 
@@ -43,11 +43,11 @@ public class QuarkusFacesInitilializer extends FaceletsInitilializer {
         FactoryFinderProviderFactory.setInstance(new QuarkusFactoryFinderProviderFactory());
 
         // see FacesDataModelExtension
-        FacesDataModelClassBeanHolder holder = CDI.current().select(FacesDataModelClassBeanHolder.class).get();
+        FacesDataModelHolder holder = CDI.current().select(FacesDataModelHolder.class).get();
         for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo : MyFacesRecorder.FACES_DATA_MODELS.entrySet()) {
             holder.addFacesDataModel(typeInfo.getValue(), typeInfo.getKey());
         }
-        holder.getClassInstanceToDataModelWrapperClassMap();
+        holder.init();
 
         super.initFaces(servletContext);
     }
