@@ -46,19 +46,16 @@ public class FacesConverterBuildStep {
             AnnotationValue managed = ai.value("managed");
             if (managed != null && managed.asBoolean()) {
                 AnnotationValue forClass = ai.value("forClass");
-                if (forClass != null) {
-                    if (!Object.class.getName().equals(forClass.asClass().name().toString())) {
-                        register(beanConfigurators,
-                                ai.target().asClass(), forClass.asClass(), null);
-                    }
+                if (forClass != null
+                        && !Object.class.getName().equals(forClass.asClass().name().toString())) {
+                    register(beanConfigurators, ai.target().asClass(), forClass.asClass(), null);
                 }
 
                 AnnotationValue value = ai.value("value");
-                if (value != null) {
-                    if (value.asString() != null && value.asString().length() > 0) {
-                        register(beanConfigurators,
-                                ai.target().asClass(), null, value.asString());
-                    }
+                if (value != null
+                        && value.asString() != null
+                        && value.asString().length() > 0) {
+                    register(beanConfigurators, ai.target().asClass(), null, value.asString());
                 }
             }
         }

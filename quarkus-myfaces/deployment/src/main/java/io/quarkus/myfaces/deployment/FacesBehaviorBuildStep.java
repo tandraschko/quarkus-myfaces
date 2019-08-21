@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
+import javax.faces.component.behavior.Behavior;
+import javax.faces.component.behavior.FacesBehavior;
 
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationValue;
@@ -35,13 +35,13 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.myfaces.runtime.producer.SimpleBeanCreator;
 
-public class FacesValidatorBuildStep {
+public class FacesBehaviorBuildStep {
 
     public static void build(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) {
 
         for (AnnotationInstance ai : combinedIndex.getIndex()
-                .getAnnotations(DotName.createSimple(FacesValidator.class.getName()))) {
+                .getAnnotations(DotName.createSimple(FacesBehavior.class.getName()))) {
 
             AnnotationValue managed = ai.value("managed");
             if (managed != null && managed.asBoolean()) {
@@ -49,13 +49,7 @@ public class FacesValidatorBuildStep {
                 if (value != null
                         && value.asString() != null
                         && value.asString().length() > 0) {
-
-                    AnnotationValue isDefault = ai.value("isDefault");
-
-                    register(beanConfigurators,
-                            ai.target().asClass(),
-                            isDefault == null ? null : isDefault.asBoolean(),
-                            value.asString());
+                    register(beanConfigurators, ai.target().asClass(), value.asString());
                 }
             }
         }
@@ -63,23 +57,18 @@ public class FacesValidatorBuildStep {
 
     private static void register(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             ClassInfo clazz,
-            Boolean isDefault,
-            String validatorId) {
+            String behaviorId) {
 
-        if (validatorId == null) {
-            validatorId = "";
-        }
-        if (isDefault == null) {
-            isDefault = false;
+        if (behaviorId == null) {
+            behaviorId = "";
         }
 
         List<AnnotationValue> qualifierAttributes = Arrays.asList(
-                AnnotationValue.createStringValue("value", validatorId),
-                AnnotationValue.createBooleanValue("isDefault", isDefault),
+                AnnotationValue.createStringValue("value", behaviorId),
                 AnnotationValue.createBooleanValue("managed", true));
 
         AnnotationInstance qualifier = AnnotationInstance.create(
-                DotName.createSimple(FacesValidator.class.getName()),
+                DotName.createSimple(FacesBehavior.class.getName()),
                 null,
                 qualifierAttributes);
 
@@ -90,7 +79,7 @@ public class FacesValidatorBuildStep {
                         .configure(clazz.name())
                         .qualifiers(qualifier)
                         .scope(BuiltinScope.DEPENDENT.getInfo())
-                        .types(Type.create(DotName.createSimple(Validator.class.getName()), Type.Kind.CLASS),
+                        .types(Type.create(DotName.createSimple(Behavior.class.getName()), Type.Kind.CLASS),
                                 Type.create(clazz.name(), Type.Kind.CLASS))
                         .creator(SimpleBeanCreator.class)
                         .name(UUID.randomUUID().toString().replace("-", ""))
