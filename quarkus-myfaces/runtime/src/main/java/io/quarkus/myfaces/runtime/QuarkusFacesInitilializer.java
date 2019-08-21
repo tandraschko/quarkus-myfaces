@@ -44,7 +44,7 @@ public class QuarkusFacesInitilializer extends FaceletsInitilializer {
 
         // see FacesDataModelExtension
         FacesDataModelClassBeanHolder holder = CDI.current().select(FacesDataModelClassBeanHolder.class).get();
-        for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo : QuarkusMyFacesRecorder.FACES_DATA_MODELS.entrySet()) {
+        for (Map.Entry<Class<? extends DataModel>, Class<?>> typeInfo : MyFacesRecorder.FACES_DATA_MODELS.entrySet()) {
             holder.addFacesDataModel(typeInfo.getValue(), typeInfo.getKey());
         }
         holder.getClassInstanceToDataModelWrapperClassMap();

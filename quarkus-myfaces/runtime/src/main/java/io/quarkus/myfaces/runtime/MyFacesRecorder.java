@@ -13,7 +13,7 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
-public class QuarkusMyFacesRecorder {
+public class MyFacesRecorder {
 
     public static final Map<Class<? extends Annotation>, Set<Class<?>>> ANNOTATED_CLASSES = new LinkedHashMap<>();
     public static final Map<Class<? extends DataModel>, Class<?>> FACES_DATA_MODELS = new LinkedHashMap<>();

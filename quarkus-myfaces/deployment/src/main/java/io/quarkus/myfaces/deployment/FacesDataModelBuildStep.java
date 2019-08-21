@@ -30,12 +30,12 @@ import io.quarkus.arc.processor.BeanRegistrar;
 import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.myfaces.runtime.QuarkusMyFacesRecorder;
+import io.quarkus.myfaces.runtime.MyFacesRecorder;
 import io.quarkus.myfaces.runtime.producer.FacesDataModelBeanCreator;
 
 public class FacesDataModelBuildStep {
 
-    public static void build(QuarkusMyFacesRecorder recorder,
+    public static void build(MyFacesRecorder recorder,
             BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) {
 
