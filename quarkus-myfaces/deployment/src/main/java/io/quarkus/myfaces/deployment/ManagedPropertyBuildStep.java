@@ -29,7 +29,7 @@ import io.quarkus.arc.processor.BuildExtension;
 import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.arc.processor.InjectionPointInfo;
 import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.myfaces.runtime.ManagedPropertyBeanCreator;
+import io.quarkus.myfaces.runtime.producer.ManagedPropertyBeanCreator;
 
 public class ManagedPropertyBuildStep {
 

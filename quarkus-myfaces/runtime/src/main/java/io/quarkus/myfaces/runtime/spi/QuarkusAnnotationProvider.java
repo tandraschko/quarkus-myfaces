@@ -26,7 +26,7 @@ import javax.faces.context.ExternalContext;
 
 import org.apache.myfaces.spi.AnnotationProvider;
 
-import io.quarkus.myfaces.runtime.MyFacesRecorder;
+import io.quarkus.myfaces.runtime.QuarkusMyFacesRecorder;
 
 /**
  * AnnotationProvider which uses the collected classes from the Quarkus Deployment-time.
@@ -35,7 +35,7 @@ public class QuarkusAnnotationProvider extends AnnotationProvider {
 
     @Override
     public Map<Class<? extends Annotation>, Set<Class<?>>> getAnnotatedClasses(ExternalContext ctx) {
-        return MyFacesRecorder.ANNOTATED_CLASSES;
+        return QuarkusMyFacesRecorder.ANNOTATED_CLASSES;
     }
 
     @Override

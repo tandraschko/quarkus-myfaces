@@ -33,7 +33,7 @@ import io.quarkus.arc.processor.BeanRegistrar;
 import io.quarkus.arc.processor.BuiltinScope;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
-import io.quarkus.myfaces.runtime.SimpleBeanCreator;
+import io.quarkus.myfaces.runtime.producer.SimpleBeanCreator;
 
 public class FacesValidatorBuildStep {
 

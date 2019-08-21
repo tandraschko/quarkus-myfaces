@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.quarkus.myfaces.runtime;
+package io.quarkus.myfaces.runtime.producer;
 
 import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.CDI;
 
-import org.apache.myfaces.util.lang.ClassUtils;
+import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
 
 import io.quarkus.arc.BeanCreator;
 
-public class SimpleBeanCreator implements BeanCreator<Object> {
-
-    public static final String CLASSNAME = "clazz";
+public class FacesDataModelBeanCreator implements BeanCreator<Object> {
 
     @Override
     public Object create(CreationalContext<Object> cc, Map<String, Object> map) {
-        return ClassUtils.newInstance((String) map.get(CLASSNAME));
+        FacesDataModelClassBeanHolder holder = CDI.current().select(FacesDataModelClassBeanHolder.class).get();
+        return holder.getClassInstanceToDataModelWrapperClassMap();
     }
 
 }

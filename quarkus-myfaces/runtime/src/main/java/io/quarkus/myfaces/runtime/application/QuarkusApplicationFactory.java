@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.quarkus.myfaces.runtime;
+package io.quarkus.myfaces.runtime.application;
 
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;

@@ -65,8 +65,8 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.myfaces.runtime.MyFacesRecorder;
 import io.quarkus.myfaces.runtime.QuarkusFacesInitilializer;
+import io.quarkus.myfaces.runtime.QuarkusMyFacesRecorder;
 import io.quarkus.myfaces.runtime.scopes.QuarkusFacesScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
@@ -224,7 +224,8 @@ class MyFacesProcessor {
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
-    void buildAnnotationProviderIntegration(MyFacesRecorder recorder, CombinedIndexBuildItem combinedIndex) throws IOException {
+    void buildAnnotationProviderIntegration(QuarkusMyFacesRecorder recorder, CombinedIndexBuildItem combinedIndex)
+            throws IOException {
 
         for (String clazz : BEAN_DEFINING_ANNOTATION_CLASSES) {
             combinedIndex.getIndex()
@@ -265,7 +266,7 @@ class MyFacesProcessor {
 
     @BuildStep
     @Record(ExecutionTime.STATIC_INIT)
-    void buildFacesDataModels(MyFacesRecorder recorder,
+    void buildFacesDataModels(QuarkusMyFacesRecorder recorder,
             BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException {
 

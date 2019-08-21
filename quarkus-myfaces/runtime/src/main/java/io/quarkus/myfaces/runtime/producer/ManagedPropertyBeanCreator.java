@@ -13,23 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.quarkus.myfaces.runtime;
+package io.quarkus.myfaces.runtime.producer;
 
 import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.CDI;
-
-import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
+import javax.faces.FacesException;
+import javax.faces.context.FacesContext;
 
 import io.quarkus.arc.BeanCreator;
 
-public class FacesDataModelBeanCreator implements BeanCreator<Object> {
+public class ManagedPropertyBeanCreator implements BeanCreator<Object> {
+
+    public static final String EXPRESSION = "expression";
 
     @Override
     public Object create(CreationalContext<Object> cc, Map<String, Object> map) {
-        FacesDataModelClassBeanHolder holder = CDI.current().select(FacesDataModelClassBeanHolder.class).get();
-        return holder.getClassInstanceToDataModelWrapperClassMap();
+        String expression = (String) map.get(EXPRESSION);
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+            throw new FacesException("@ManagedProperty(\"" + expression
+                    + "\") can only be resolved in a JSF request!");
+        }
+
+        return facesContext.getApplication().evaluateExpressionGet(facesContext, expression, Object.class);
     }
 
 }
