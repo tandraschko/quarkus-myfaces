@@ -17,6 +17,12 @@
             <h:form id="form">
                 <h:inputText value="#{inputController.val}" validator="myVal" />
                 <p:commandButton process="@form" update="@form" value="Submit" />
+
+
+                <h:dataTable value="#{myBacking.cars}" var="car">
+                    <h:column>#{car.id}</h:column>
+                </h:dataTable>
+
             </h:form>
         </h:body>
 
