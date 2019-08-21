@@ -249,7 +249,7 @@ class MyFacesProcessor {
     }
 
     @BuildStep
-    void registerValidatorConverterProducers(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+    void buildValidatorConverterProducers(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) throws IOException {
 
         FacesConverterBuildStep.build(beanConfigurators, combinedIndex);
@@ -257,9 +257,18 @@ class MyFacesProcessor {
     }
 
     @BuildStep
-    void registerMangedPropertyProducers(BeanRegistrationPhaseBuildItem beanRegistrationPhase,
+    void buildMangedPropertyProducers(BeanRegistrationPhaseBuildItem beanRegistrationPhase,
             BuildProducer<BeanRegistrationPhaseBuildItem.BeanConfiguratorBuildItem> beanConfigurators) throws IOException {
 
         ManagedPropertyBuildStep.build(beanRegistrationPhase, beanConfigurators);
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void buildFacesDataModels(MyFacesRecorder recorder,
+            BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
+            CombinedIndexBuildItem combinedIndex) throws IOException {
+
+        FacesDataModelBuildStep.build(recorder, beanConfigurators, combinedIndex);
     }
 }

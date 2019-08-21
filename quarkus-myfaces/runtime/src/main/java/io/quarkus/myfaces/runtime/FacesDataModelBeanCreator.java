@@ -18,26 +18,18 @@ package io.quarkus.myfaces.runtime;
 import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.faces.FacesException;
-import javax.faces.context.FacesContext;
+import javax.enterprise.inject.spi.CDI;
+
+import org.apache.myfaces.cdi.model.FacesDataModelClassBeanHolder;
 
 import io.quarkus.arc.BeanCreator;
 
-public class ManagedPropertyBeanCreator implements BeanCreator<Object> {
-
-    public static final String EXPRESSION = "expression";
+public class FacesDataModelBeanCreator implements BeanCreator<Object> {
 
     @Override
     public Object create(CreationalContext<Object> cc, Map<String, Object> map) {
-        String expression = (String) map.get(EXPRESSION);
-
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null) {
-            throw new FacesException("@ManagedProperty(\"" + expression
-                    + "\") can only be resolved in a JSF request!");
-        }
-
-        return facesContext.getApplication().evaluateExpressionGet(facesContext, expression, Object.class);
+        FacesDataModelClassBeanHolder holder = CDI.current().select(FacesDataModelClassBeanHolder.class).get();
+        return holder.getClassInstanceToDataModelWrapperClassMap();
     }
 
 }

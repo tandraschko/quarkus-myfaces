@@ -39,10 +39,10 @@ public class FacesConverterBuildStep {
 
     public static void build(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) {
-        
+
         for (AnnotationInstance ai : combinedIndex.getIndex()
                 .getAnnotations(DotName.createSimple(FacesConverter.class.getName()))) {
-            
+
             AnnotationValue managed = ai.value("managed");
             if (managed != null && managed.asBoolean()) {
                 AnnotationValue forClass = ai.value("forClass");

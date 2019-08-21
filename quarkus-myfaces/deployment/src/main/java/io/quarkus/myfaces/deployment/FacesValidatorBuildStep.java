@@ -39,10 +39,10 @@ public class FacesValidatorBuildStep {
 
     public static void build(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
             CombinedIndexBuildItem combinedIndex) {
-        
+
         for (AnnotationInstance ai : combinedIndex.getIndex()
                 .getAnnotations(DotName.createSimple(FacesValidator.class.getName()))) {
-            
+
             AnnotationValue managed = ai.value("managed");
             if (managed != null && managed.asBoolean()) {
                 AnnotationValue value = ai.value("value");
