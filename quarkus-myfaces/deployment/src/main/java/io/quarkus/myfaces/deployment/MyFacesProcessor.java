@@ -37,7 +37,7 @@ import org.apache.myfaces.cdi.FacesScoped;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
 import org.apache.myfaces.cdi.JsfArtifactProducer;
 import org.apache.myfaces.cdi.config.FacesConfigBeanHolder;
-import org.apache.myfaces.cdi.model.FacesDataModelHolder;
+import org.apache.myfaces.cdi.model.FacesDataModelManager;
 import org.apache.myfaces.cdi.view.ViewScopeBeanHolder;
 import org.apache.myfaces.cdi.view.ViewTransientScoped;
 import org.apache.myfaces.config.MyfacesConfig;
@@ -89,7 +89,7 @@ class MyFacesProcessor {
 
             FacesConfigBeanHolder.class,
 
-            FacesDataModelHolder.class,
+            FacesDataModelManager.class,
 
             ViewScopeBeanHolder.class,
 
