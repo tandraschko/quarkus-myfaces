@@ -253,15 +253,6 @@ class MyFacesProcessor {
     }
 
     @BuildStep
-    void buildValidatorConverterBehaviorProducers(BuildProducer<BeanRegistrarBuildItem> beanConfigurators,
-            CombinedIndexBuildItem combinedIndex) throws IOException {
-
-        FacesConverterBuildStep.build(beanConfigurators, combinedIndex);
-        FacesValidatorBuildStep.build(beanConfigurators, combinedIndex);
-        FacesBehaviorBuildStep.build(beanConfigurators, combinedIndex);
-    }
-
-    @BuildStep
     void buildMangedPropertyProducers(BeanRegistrationPhaseBuildItem beanRegistrationPhase,
             BuildProducer<BeanRegistrationPhaseBuildItem.BeanConfiguratorBuildItem> beanConfigurators) throws IOException {
 
