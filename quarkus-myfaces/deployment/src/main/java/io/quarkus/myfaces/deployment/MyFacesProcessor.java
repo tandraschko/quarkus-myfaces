@@ -24,6 +24,8 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.FacesConverter;
+import javax.faces.flow.FlowScoped;
+import javax.faces.flow.builder.FlowDefinition;
 import javax.faces.model.FacesDataModel;
 import javax.faces.push.PushContext;
 import javax.faces.render.FacesBehaviorRenderer;
@@ -113,7 +115,8 @@ class MyFacesProcessor {
             FacesRenderer.class.getName(),
             NamedEvent.class.getName(),
             FacesBehaviorRenderer.class.getName(),
-            FaceletsResourceResolver.class.getName()
+            FaceletsResourceResolver.class.getName(),
+            FlowDefinition.class.getName()
     };
 
     @BuildStep
@@ -270,6 +273,24 @@ class MyFacesProcessor {
             AnnotationValue forClass = ai.value("forClass");
             if (forClass != null) {
                 recorder.registerFacesDataModel(ai.target().asClass().name().toString(), forClass.asClass().name().toString());
+            }
+        }
+    }
+
+    @BuildStep
+    @Record(ExecutionTime.STATIC_INIT)
+    void buildFlowScopedMapping(MyFacesRecorder recorder,
+            CombinedIndexBuildItem combinedIndex) throws IOException {
+
+        for (AnnotationInstance ai : combinedIndex.getIndex()
+                .getAnnotations(DotName.createSimple(FlowScoped.class.getName()))) {
+            AnnotationValue flowId = ai.value("value");
+            if (flowId != null && flowId.asString() != null) {
+
+                AnnotationValue definingDocumentId = ai.value("definingDocumentId");
+                recorder.registerFlowReference(ai.target().asClass().name().toString(),
+                        definingDocumentId == null ? "" : definingDocumentId.asString(),
+                        flowId.asString());
             }
         }
     }

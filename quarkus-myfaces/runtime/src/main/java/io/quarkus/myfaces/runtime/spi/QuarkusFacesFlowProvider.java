@@ -15,11 +15,13 @@
  */
 package io.quarkus.myfaces.runtime.spi;
 
-import java.util.Collections;
 import java.util.Iterator;
 
+import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.faces.context.FacesContext;
 import javax.faces.flow.Flow;
+import javax.faces.flow.builder.FlowDefinition;
 
 import org.apache.myfaces.flow.cdi.DefaultCDIFacesFlowProvider;
 
@@ -27,6 +29,7 @@ public class QuarkusFacesFlowProvider extends DefaultCDIFacesFlowProvider {
 
     @Override
     public Iterator<Flow> getAnnotatedFlows(FacesContext facesContext) {
-        return Collections.emptyIterator();
+        return CDI.current().select(Flow.class, new AnnotationLiteral<FlowDefinition>() {
+        }).stream().iterator();
     }
 }
