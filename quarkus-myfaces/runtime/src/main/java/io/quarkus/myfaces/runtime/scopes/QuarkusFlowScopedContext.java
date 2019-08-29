@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.CDI;
-import javax.faces.view.ViewScoped;
+import javax.faces.flow.FlowScoped;
 
 import org.apache.myfaces.flow.cdi.FlowScopedContextImpl;
 
@@ -53,7 +53,7 @@ public class QuarkusFlowScopedContext implements InjectableContext {
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return ViewScoped.class;
+        return FlowScoped.class;
     }
 
     @Override

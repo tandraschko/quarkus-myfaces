@@ -74,6 +74,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.myfaces.runtime.MyFacesRecorder;
 import io.quarkus.myfaces.runtime.QuarkusFacesInitilializer;
 import io.quarkus.myfaces.runtime.scopes.QuarkusFacesScopeContext;
+import io.quarkus.myfaces.runtime.scopes.QuarkusFlowScopedContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewScopeContext;
 import io.quarkus.myfaces.runtime.scopes.QuarkusViewTransientScopeContext;
 import io.quarkus.myfaces.runtime.spi.QuarkusInjectionProvider;
@@ -162,6 +163,8 @@ class MyFacesProcessor {
                 registrationContext.configure(FacesScoped.class).normal().contextClass(QuarkusFacesScopeContext.class).done();
                 registrationContext.configure(ViewTransientScoped.class).normal()
                         .contextClass(QuarkusViewTransientScopeContext.class).done();
+                registrationContext.configure(FlowScoped.class).normal()
+                        .contextClass(QuarkusFlowScopedContext.class).done();
             }
         }));
     }
