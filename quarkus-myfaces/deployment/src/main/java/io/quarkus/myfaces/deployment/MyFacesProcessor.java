@@ -139,12 +139,8 @@ class MyFacesProcessor {
     }
 
     @BuildStep
-    void buildCdiBeans(BuildProducer<FeatureBuildItem> feature,
-            BuildProducer<ServletBuildItem> servlet,
-            BuildProducer<ListenerBuildItem> listener,
-            BuildProducer<AdditionalBeanBuildItem> additionalBean,
-            BuildProducer<BeanDefiningAnnotationBuildItem> beanDefiningAnnotation,
-            BuildProducer<ContextRegistrarBuildItem> contextRegistrar) throws IOException {
+    void buildCdiBeans(BuildProducer<AdditionalBeanBuildItem> additionalBean,
+            BuildProducer<BeanDefiningAnnotationBuildItem> beanDefiningAnnotation) throws IOException {
 
         for (Class<?> clazz : BEAN_CLASSES) {
             additionalBean.produce(AdditionalBeanBuildItem.unremovableOf(clazz));
