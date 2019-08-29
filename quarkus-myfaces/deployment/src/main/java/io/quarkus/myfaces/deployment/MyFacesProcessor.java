@@ -33,7 +33,6 @@ import javax.faces.render.FacesRenderer;
 import javax.faces.validator.FacesValidator;
 import javax.faces.view.ViewScoped;
 import javax.faces.view.facelets.FaceletsResourceResolver;
-import javax.faces.webapp.FacesServlet;
 
 import org.apache.myfaces.cdi.FacesScoped;
 import org.apache.myfaces.cdi.JsfApplicationArtifactHolder;
@@ -52,6 +51,7 @@ import org.apache.myfaces.push.cdi.WebsocketApplicationBean;
 import org.apache.myfaces.push.cdi.WebsocketChannelTokenBuilderBean;
 import org.apache.myfaces.push.cdi.WebsocketSessionBean;
 import org.apache.myfaces.push.cdi.WebsocketViewBean;
+import org.apache.myfaces.webapp.MyFacesServlet;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.AnnotationInstance;
@@ -129,7 +129,9 @@ class MyFacesProcessor {
             BuildProducer<ServletBuildItem> servlet,
             BuildProducer<ListenerBuildItem> listener) throws IOException {
 
-        servlet.produce(ServletBuildItem.builder("Faces Servlet", FacesServlet.class.getName())
+        // Sometimes on Quarkus the StartupServletContextListener isnt initialized...
+        // So we better add the MyFacesServlet (instead FacesServlet), which has the same init code as StartupServletContextListener
+        servlet.produce(ServletBuildItem.builder("Faces Servlet", MyFacesServlet.class.getName())
                 .addMapping("*.xhtml")
                 .build());
     }
