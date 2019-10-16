@@ -21,7 +21,7 @@
     <parent>
         <artifactId>quarkus-myfaces-parent</artifactId>
         <groupId>io.quarkus</groupId>
-        <version>0.21.1</version>
+        <version>0.24.0</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -45,7 +45,13 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
+            <version>1.9.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- EL implementation -->
