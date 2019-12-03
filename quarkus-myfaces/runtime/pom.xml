@@ -21,7 +21,7 @@
     <parent>
         <artifactId>quarkus-myfaces-parent</artifactId>
         <groupId>io.quarkus</groupId>
-        <version>0.24.0</version>
+        <version>1.0.1.Final</version>
         <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -58,15 +58,8 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jasper-el</artifactId>
-            <version>9.0.17</version>
+            <version>9.0.29</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_4.0_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
 
         <dependency>
             <groupId>io.quarkus</groupId>
