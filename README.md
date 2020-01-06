@@ -1,3 +1,5 @@
+# NOTE: it has been moved to MyFaces directly: https://github.com/apache/myfaces/tree/master/extensions/quarkus/
+
 # quarkus-myfaces
 
 Prototype implementation of a JSF / MyFaces Core module for Quarkus. 
